@@ -1,12 +1,15 @@
 """
-Turn-level 时间格式化工具。
+Turn-level time formatting utility.
 
-设计要点：
-  - 时区解析优先委托 Hermes 自带的 ``hermes_time`` 模块，确保与 Hermes 主程序
-    完全一致的优先级链：HERMES_TIMEZONE > ~/.hermes/config.yaml: timezone > 系统本地时区。
-  - Hermes 不可导入时（独立测试场景）走本地等价实现作为兜底。
-  - 时区字符串模块加载时解析一次并缓存（``_tz_str``），datetime.now() 每次重新求值。
-  - 任何异常都降级到 ``datetime.now().astimezone()``，保证 hook 永不抛错。
+Design key points:
+  - Timezone resolution prioritizes delegating to the Hermes built-in ``hermes_time`` module
+    to ensure consistency with the Hermes main program's priority chain:
+    HERMES_TIMEZONE > ~/.hermes/config.yaml: timezone > system local timezone.
+  - When Hermes cannot be imported (standalone testing scenario), fall back to local
+    equivalent implementation.
+  - Timezone string is parsed once at module load time and cached (``_tz_str``),
+    datetime.now() is re-evaluated on each call.
+  - Any exception falls back to ``datetime.now().astimezone()``, ensuring the hook never raises.
 """
 
 import os
@@ -15,7 +18,7 @@ from pathlib import Path
 
 
 def _resolve_tz_from_hermes() -> str:
-    """优先委托 hermes_time._resolve_timezone_name()，保持与 Hermes 主程序一致。"""
+    """Prioritize delegating to hermes_time._resolve_timezone_name() to maintain consistency with Hermes."""
     try:
         import hermes_time  # type: ignore[import-not-found]
         return (hermes_time._resolve_timezone_name() or "").strip()
@@ -24,12 +27,12 @@ def _resolve_tz_from_hermes() -> str:
 
 
 def _resolve_tz_local() -> str:
-    """Hermes 不可用时的本地等价实现：env > ~/.hermes/config.yaml > ''."""
+    """Local equivalent implementation when Hermes is unavailable: env > ~/.hermes/config.yaml > ''."""
     tz_env = os.environ.get("HERMES_TIMEZONE", "").strip()
     if tz_env:
         return tz_env
     try:
-        import yaml  # PyYAML 是 Hermes 的运行时依赖
+        import yaml  # PyYAML is a Hermes runtime dependency
         cfg_path = Path(
             os.environ.get("HERMES_HOME", Path.home() / ".hermes")
         ) / "config.yaml"
@@ -51,9 +54,9 @@ _WEEKDAYS_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturda
 
 def format_current_time() -> str:
     """
-    返回形如 `[Current time: Friday 2026-06-12 16:33 Asia/Jakarta]` 的标签字符串。
+    Return a time label string in the format `[Current time: Friday 2026-06-12 16:33 Asia/Jakarta]`.
 
-    永不抛异常：任何时区解析失败都回退到本地时区。
+    Never raises an exception: any timezone resolution failure falls back to local timezone.
     """
     tz_label = ""
     try:
