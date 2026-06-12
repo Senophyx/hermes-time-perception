@@ -15,7 +15,7 @@ A standalone time-perception extension for [Hermes Agent](https://github.com/Nou
 ## File layout (flat, Hermes 0.14+ compatible)
 
 ```
-hermes-time_perception-extension/
+hermes-time-perception/
 ├── plugin.yaml              # Hermes plugin manifest (top-level)
 ├── __init__.py              # register(ctx) entrypoint (top-level)
 ├── hooks.py                 # pre_llm_call hook (top-level)
@@ -34,7 +34,7 @@ hermes-time_perception-extension/
 
 ```bash
 mkdir -p ~/.hermes/plugins
-git clone https://github.com/gejifeng/hermes-time_perception-extension \
+git clone https://github.com/Senophyx/hermes-time-perception \
         ~/.hermes/plugins/hermes-time-perception
 
 hermes plugins enable hermes-time-perception
@@ -47,7 +47,7 @@ Profile-mode Hermes scans `<profile>/plugins/` for user plugins, **not** `~/.her
 
 ```bash
 mkdir -p ~/.hermes/profiles/<name>/plugins
-git clone https://github.com/gejifeng/hermes-time_perception-extension \
+git clone https://github.com/Senophyx/hermes-time-perception \
         ~/.hermes/profiles/<name>/plugins/hermes-time-perception
 
 hermes -p <name> plugins enable hermes-time-perception
