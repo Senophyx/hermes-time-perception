@@ -1,9 +1,9 @@
 """
-Hermes Time Perception 插件注册入口。
+Hermes Time Perception plugin registration entry point.
 
-Hermes 自动发现 ~/.hermes/plugins/hermes-time-perception/ 并调用 register(ctx)。
-本扩展只做一件事：每个 LLM turn 之前，通过 pre_llm_call hook 把当前时间
-append 到 user message 末尾（ephemeral，不污染 system prompt / prompt cache）。
+Hermes automatically discovers ~/.hermes/plugins/hermes-time-perception/ and calls register(ctx).
+This extension does one thing: before each LLM turn, append the current time via the pre_llm_call
+hook to the end of the user message (ephemeral, does not pollute system prompt / prompt cache).
 """
 
 import importlib.util
