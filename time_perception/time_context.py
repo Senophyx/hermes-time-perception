@@ -46,12 +46,12 @@ def _resolve_tz_local() -> str:
 _tz_str = _resolve_tz_from_hermes() or _resolve_tz_local()
 
 
-_WEEKDAYS_ZH = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
+_WEEKDAYS_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
 def format_current_time() -> str:
     """
-    返回形如 `[Current time: 2026-05-20 14:30 Asia/Shanghai 星期三]` 的标签字符串。
+    返回形如 `[Current time: Friday 2026-06-12 16:33 Asia/Jakarta]` 的标签字符串。
 
     永不抛异常：任何时区解析失败都回退到本地时区。
     """
@@ -66,6 +66,6 @@ def format_current_time() -> str:
     except Exception:
         now = datetime.now().astimezone()
 
-    weekday = _WEEKDAYS_ZH[now.weekday()]
+    weekday = _WEEKDAYS_EN[now.weekday()]
     tz_label = tz_label or now.strftime("%Z") or now.strftime("%z")
-    return f"[Current time: {now.strftime('%Y-%m-%d %H:%M')} {tz_label} {weekday}]"
+    return f"[Current time: {weekday} {now.strftime('%Y-%m-%d')} {now.strftime('%H:%M')} {tz_label}]"
